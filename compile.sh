@@ -259,7 +259,7 @@ function linkFile(){
 	[ $true                        ] && { local name="$1";                                                                                                                                            } || :;
 	[ $true                        ] && { local settings="-fdiagnostics-color=always -Os";                                                                                                            } || :;
 	[ $true                        ] && { local warnings="";                                                                                                                                          } || :;
-	[ $true                        ] && { local libraries=$librariesInput;                                                                                                                            } || :;
+	[ $true                        ] && { local libraries="$librariesInput";                                                                                                                          } || :;
 	[ $true                        ] && { local value="";                                                                                                                                             } || :;
 	[ $true                        ] && { local color="\x1b[32m";                                                                                                                                     } || :;
 	[ ! -n "$name"                 ] && { printf "${TAB}no file to link\n" 1>&2;                                                                                                       return $false; } || :;
