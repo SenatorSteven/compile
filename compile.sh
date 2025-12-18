@@ -80,7 +80,7 @@ function main(){
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "debug-folder"  ] && { debugFolder="${argv[i+1]}";     break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "output-folder" ] && { outputFolder="${argv[i+1]}";    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "record-folder" ] && { recordFolder="${argv[i+1]}";    break; } || :; done                               } || :;
-	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "include"       ] && { includesArray="${argv[i+1]}";   break; } || :; done                               } || :;
+	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "includes"      ] && { includesArray="${argv[i+1]}";   break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "systems"       ] && { systemArray="${argv[i+1]}";     break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "utilities"     ] && { utilityArray="${argv[i+1]}";    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "functions"     ] && { functionArray="${argv[i+1]}";   break; } || :; done                               } || :;
@@ -101,7 +101,7 @@ function main(){
 	[ ! -d "$debugFolder"          ] && { printf "$NAME: could not create debug directory\n" 1>&2;                                                                                     return 1;      } || :;
 	[ ! -d "$outputFolder"         ] && { printf "$NAME: could not create output directory\n" 1>&2;                                                                                    return 1;      } || :;
 	[ ! -d "$recordFolder"         ] && { printf "$NAME: could not create record directory\n" 1>&2;                                                                                    return 1;      } || :;
-	[ -n "$includesArray"           ] && { includesArray=($(expandStringToArray $'\n' "$includesArray"));                                                                                             } || :;
+	[ -n "$includesArray"          ] && { includesArray=($(expandStringToArray $'\n' "$includesArray"));                                                                                              } || :;
 	[ -n "$systemArray"            ] && { systemArray=($(expandStringToArray $'\n' "$systemArray"));                                                                                                  } || :;
 	[ -n "$utilityArray"           ] && { utilityArray=($(expandStringToArray $'\n' "$utilityArray"));                                                                                                } || :;
 	[ -n "$functionArray"          ] && { functionArray=($(expandStringToArray $'\n' "$functionArray"));                                                                                              } || :;
