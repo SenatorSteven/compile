@@ -63,7 +63,7 @@ function main(){
 	[ $true                        ] && { local debugFolder="";                                                                                                                                       } || :;
 	[ $true                        ] && { local outputFolder="";                                                                                                                                      } || :;
 	[ $true                        ] && { local recordFolder="";                                                                                                                                      } || :;
-	[ $true                        ] && { local includeArray="";                                                                                                                                      } || :;
+	[ $true                        ] && { local includesArray="";                                                                                                                                     } || :;
 	[ $true                        ] && { local systemArray="";                                                                                                                                       } || :;
 	[ $true                        ] && { local utilityArray="";                                                                                                                                      } || :;
 	[ $true                        ] && { local functionArray="";                                                                                                                                     } || :;
@@ -80,7 +80,7 @@ function main(){
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "debug-folder"  ] && { debugFolder="${argv[i+1]}";     break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "output-folder" ] && { outputFolder="${argv[i+1]}";    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "record-folder" ] && { recordFolder="${argv[i+1]}";    break; } || :; done                               } || :;
-	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "include"       ] && { includeArray="${argv[i+1]}";    break; } || :; done                               } || :;
+	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "include"       ] && { includesArray="${argv[i+1]}";   break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "systems"       ] && { systemArray="${argv[i+1]}";     break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "utilities"     ] && { utilityArray="${argv[i+1]}";    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "functions"     ] && { functionArray="${argv[i+1]}";   break; } || :; done                               } || :;
@@ -101,7 +101,7 @@ function main(){
 	[ ! -d "$debugFolder"          ] && { printf "$NAME: could not create debug directory\n" 1>&2;                                                                                     return 1;      } || :;
 	[ ! -d "$outputFolder"         ] && { printf "$NAME: could not create output directory\n" 1>&2;                                                                                    return 1;      } || :;
 	[ ! -d "$recordFolder"         ] && { printf "$NAME: could not create record directory\n" 1>&2;                                                                                    return 1;      } || :;
-	[ -n "$includeArray"           ] && { includeArray=($(expandStringToArray $'\n' "$includeArray"));                                                                                                } || :;
+	[ -n "$includesArray"           ] && { includesArray=($(expandStringToArray $'\n' "$includesArray"));                                                                                             } || :;
 	[ -n "$systemArray"            ] && { systemArray=($(expandStringToArray $'\n' "$systemArray"));                                                                                                  } || :;
 	[ -n "$utilityArray"           ] && { utilityArray=($(expandStringToArray $'\n' "$utilityArray"));                                                                                                } || :;
 	[ -n "$functionArray"          ] && { functionArray=($(expandStringToArray $'\n' "$functionArray"));                                                                                              } || :;
@@ -209,7 +209,7 @@ function compileExecutable(){
 function preprocessFile(){
 	[ $true                        ] && { local file="$1";                                                                                                                                            } || :;
 	[ $true                        ] && { local name="";                                                                                                                                              } || :;
-	[ $true                        ] && { local settings="$includeArray -fdiagnostics-color=always -x c -S -std=c89 -Os";                                                                             } || :;
+	[ $true                        ] && { local settings="$includesArray -fdiagnostics-color=always -x c -S -std=c89 -Os";                                                                            } || :;
 	[ $true                        ] && { local warnings="";                                                                                                                                          } || :;
 	[ $true                        ] && { local libraries="";                                                                                                                                         } || :;
 	[ $true                        ] && { local value="";                                                                                                                                             } || :;
