@@ -230,7 +230,7 @@ function preprocessFile(){
 function compileFile(){
 	[ $true                        ] && { local file="$1";                                                                                                                                            } || :;
 	[ $true                        ] && { local name="";                                                                                                                                              } || :;
-	[ $true                        ] && { local settings="-fdiagnostics-color=always -x c -std=c89 -Os";                                                                                              } || :;
+	[ $true                        ] && { local settings="$includesArray -fdiagnostics-color=always -x c -std=c89 -Os";                                                                               } || :;
 	[ $true                        ] && { local warnings="";                                                                                                                                          } || :;
 	[ $true                        ] && { local libraries="";                                                                                                                                         } || :;
 	[ $true                        ] && { local value="";                                                                                                                                             } || :;
