@@ -1,24 +1,4 @@
 
-# compile normal program
-#     gcc         -E program.c -o program.i
-#     gcc         -S program.i -o program.s
-#     gcc         -c program.s -o program.o
-#     gcc            program.o -o program
-
-# compile shared library
-#     gcc         -E program.c -o program.i
-#     gcc -fPIC   -S program.i -o program.s
-#     gcc         -c program.s -o program.o
-#     gcc -shared    program.o -o program.so
-
-
-
-
-
-
-
-
-
 # compile.sh
 #
 # MIT License
@@ -57,6 +37,7 @@ function main(){
 	[ $true                        ] && { local debug=$false;                                                                                                                                         } || :;
 	[ $true                        ] && { local force=$false;                                                                                                                                         } || :;
 	[ $true                        ] && { local preprocess=$false;                                                                                                                                    } || :;
+	[ $true                        ] && { local shared=$false;                                                                                                                                        } || :;
 	[ $true                        ] && { local errors=$false;                                                                                                                                        } || :;
 	[ $true                        ] && { local headerFolder="";                                                                                                                                      } || :;
 	[ $true                        ] && { local sourceFolder="";                                                                                                                                      } || :;
@@ -74,6 +55,7 @@ function main(){
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "debug"         ] && { debug=$true;                    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "force"         ] && { force=$true;                    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "preprocess"    ] && { preprocess=$true;               break; } || :; done                               } || :;
+	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "shared"        ] && { shared=$true;                   break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "errors"        ] && { errors=$true;                   break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "header-folder" ] && { headerFolder="${argv[i+1]}";    break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "source-folder" ] && { sourceFolder="${argv[i+1]}";    break; } || :; done                               } || :;
@@ -88,11 +70,12 @@ function main(){
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "executables"   ] && { executableArray="${argv[i+1]}"; break; } || :; done                               } || :;
 	[ $true                        ] && { for ((i = 0; i < $argc; ++i)); do [ "${argv[i]}" = "libraries"     ] && { librariesInput="${argv[i+1]}";  break; } || :; done                               } || :;
 	[ "$argc" == "0"               ] && { help=$true;                                                                                                                                                 } || :;
-	[ $help = $true                ] && { arguments="\\ \n${TAB}help \\ \n${TAB}debug \\ \n${TAB}force \\ \n${TAB}preprocess \\ \n${TAB}errors \\ \n${TAB}header-folder [folder]";                    } || :;
-	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}source-folder [folder] \\ \n${TAB}debug-folder [folder] \\ \n${TAB}output-folder [folder]";                                } || :;
-	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}record-folder [folder] \\ \n${TAB}systems [system1,system2,...,systemn]";                                                  } || :;
-	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}utilities [utility1,utility2,...,utilityn] \\ \n${TAB}functions [function1,function2,...,functionn]";                      } || :;
-	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}mains [main1,main2,...,mainn] \\ \n${TAB}executables [executable1,executable2,...,executablen]";                           } || :;
+	[ $help = $true                ] && { arguments="\\ \n${TAB}help \\ \n${TAB}debug \\ \n${TAB}force \\ \n${TAB}preprocess \\ \n${TAB}shared \\ \n${TAB}errors";                                    } || :;
+	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}header-folder [folder] \\ \n${TAB}source-folder [folder] \\ \n${TAB}debug-folder [folder]";                                } || :;
+	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}output-folder [folder] \\ \n${TAB}record-folder [folder] \\ \n${TAB}includes [-Iinclude1 ... -Iincluden]";                 } || :;
+	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}systems [system1,...,systemn] \\ \n${TAB}utilities [utility1,...,utilityn]";                                               } || :;
+	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}functions [function1,...,functionn] \\ \n${TAB}mains [main1,...,mainn]";                                                   } || :;
+	[ $help = $true                ] && { arguments="$arguments \\ \n${TAB}executables [executable1,...,executablen] \\ \n${TAB}libraries [-llibrary1 ... -llibraryn]";                               } || :;
 	[ $help = $true                ] && { printf "$NAME: usage: $NAME $arguments\n" 1>&2;                                                                                              return 0;      } || :;
 	[ $force = $true               ] && { rm -rf "$debugFolder" "$outputFolder" "$recordFolder";                                                                                                      } || :;
 	[ $true                        ] && { mkdir -p "$debugFolder" "$outputFolder" "$recordFolder";                                                                                                    } || :;
@@ -235,6 +218,7 @@ function compileFile(){
 	[ $true                        ] && { local libraries="";                                                                                                                                         } || :;
 	[ $true                        ] && { local value="";                                                                                                                                             } || :;
 	[ $true                        ] && { local color="\x1b[32m";                                                                                                                                     } || :;
+	[ $shared = $true              ] && { settings="-fPIC $settings";                                                                                                                                 } || :;
 	[ $true                        ] && { warnings="$warnings -Waddress -Warray-bounds=1 -Wbool-compare -Wbool-operation -Wcast-function-type -Wchar-subscripts";                                     } || :;
 	[ $true                        ] && { warnings="$warnings -Wclobbered -Wduplicate-decl-specifier -Wempty-body -Wformat -Wformat-overflow -Wformat-truncation";                                    } || :;
 	[ $true                        ] && { warnings="$warnings -Wignored-qualifiers -Wimplicit -Wimplicit-fallthrough=3 -Wimplicit-function-declaration";                                              } || :;
@@ -286,6 +270,7 @@ function linkFile(){
 	[ $true                        ] && { local value="";                                                                                                                                             } || :;
 	[ $true                        ] && { local color="\x1b[32m";                                                                                                                                     } || :;
 	[ ! -n "$name"                 ] && { printf "${TAB}no file to link\n" 1>&2;                                                                                                       return $false; } || :;
+	[ $shared = $true              ] && { settings="-shared $settings"; name="lib$name.so";                                                                                                           } || :;
 	[ $true                        ] && { gcc $settings $warnings $libraries $units -o "$outputFolder/$name" &> "/tmp/._compile.txt"; value="$?";                                                     } || :;
 	[ -s "/tmp/._compile.txt"      ] && { sed -i '1s/^/\n/' "/tmp/._compile.txt"; color="\x1b[33m"; cat "/tmp/._compile.txt" >> "/tmp/.compile.txt";                                                  } || :;
 	[ -f "/tmp/._compile.txt"      ] && { rm -f "/tmp/._compile.txt";                                                                                                                                 } || :;
